@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: momo
+      Runtime: go1.x
+      FunctionName: momo
+      Timeout: 30
+      Environment:
+        Variables:
+          METER_ID: xxx
+          SWITCHBOT_API_KEY: xxx
+          MOMOCHI_ENDPOINT: xxx
+  Cron:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: momo-cron
+      ScheduleExpression: 'cron(0/2 * * * ? *)'
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt Function.Arn
+          Id: ScheduleEvent1Target
+  LambdaInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref Function
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt Cron.Arn

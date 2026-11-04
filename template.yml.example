@@ -4,8 +4,11 @@ Resources:
   Function:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: momo
-      Runtime: go1.x
+      Handler: bootstrap
+      Runtime: provided.al2023
+      Architectures:
+        - arm64
+      CodeUri: build/
       FunctionName: momo
       Timeout: 30
       Environment:
